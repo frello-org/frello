@@ -1,0 +1,9 @@
+**/dist
+**/build
+**/target
+**/.postgresql
+__ignore__*
+
+.vscode
+
+*.log
