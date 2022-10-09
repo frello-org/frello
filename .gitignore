@@ -4,6 +4,7 @@
 **/.postgresql
 __ignore__*
 
+.direnv
 .vscode
 
 *.log
