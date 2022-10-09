@@ -1,7 +1,9 @@
 **/dist
 **/build
 **/target
+**/.idea
 **/.postgresql
+**/.apt_generated
 __ignore__*
 
 .direnv
