@@ -28,7 +28,7 @@ public class ServiceClass {
     private String rawMarkdownPageBody;
     private String parsedHTMLPageBody;
 
-    private boolean isDeleted;
+    private boolean deleted;
     private Optional<OffsetDateTime> deletionTime;
     private final OffsetDateTime creationTime;
 }

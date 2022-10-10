@@ -29,7 +29,7 @@ public class ServiceReview {
     private String rawMarkdownBody;
     private String parsedHTMLBody;
 
-    private boolean isDeleted;
+    private boolean deleted;
     private Optional<OffsetDateTime> deletionTime;
     private final OffsetDateTime creationTime;
 }

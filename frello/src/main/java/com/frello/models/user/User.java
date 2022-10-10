@@ -20,7 +20,7 @@ public class User {
     private String firstName;
     private String lastName;
 
-    private boolean isDeleted;
+    private boolean deleted;
     private Optional<OffsetDateTime> deletionTime;
     private final OffsetDateTime creationTime;
 
