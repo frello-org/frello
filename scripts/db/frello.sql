@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS frello.users (
     creation_time timestamptz DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS frello.admin_users (
+CREATE TABLE IF NOT EXISTS frello.admin_actors (
     id uuid PRIMARY KEY REFERENCES frello.users(id),
 
     -- If an administrator looses its privileges, one shouldn't remove this row
@@ -26,17 +26,17 @@ CREATE TABLE IF NOT EXISTS frello.admin_users (
     is_enabled boolean NOT NULL DEFAULT true
 );
 
-CREATE TABLE IF NOT EXISTS frello.service_provider_users (
+CREATE TABLE IF NOT EXISTS frello.service_provider_actors (
     id uuid PRIMARY KEY REFERENCES frello.users(id),
 
-    -- C.f. `frello.admin_users.is_enabled`.
+    -- C.f. `frello.admin_actors.is_enabled`.
     is_enabled boolean NOT NULL DEFAULT true
 );
 
-CREATE TABLE IF NOT EXISTS frello.service_consumer_users (
+CREATE TABLE IF NOT EXISTS frello.service_consumer_actors (
     id uuid PRIMARY KEY REFERENCES frello.users(id),
 
-    -- C.f. `frello.admin_users.is_enabled`.
+    -- C.f. `frello.admin_actors.is_enabled`.
     is_enabled boolean NOT NULL DEFAULT true
 );
 
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS frello.service_classes (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     category_id uuid REFERENCES frello.service_categories(id),
 
-    provider_id uuid NOT NULL REFERENCES frello.service_provider_users(id),
+    provider_id uuid NOT NULL REFERENCES frello.service_provider_actors(id),
 
     title text NOT NULL,
     raw_markdown_page_body text NOT NULL,
@@ -93,8 +93,8 @@ CREATE TABLE IF NOT EXISTS frello.services (
     state frello.service_state NOT NULL DEFAULT 'IN_PROGRESS',
 
     class_id uuid NOT NULL REFERENCES frello.service_classes(id),
-    provider_id uuid NOT NULL REFERENCES frello.service_provider_users(id),
-    consumer_id uuid NOT NULL REFERENCES frello.service_consumer_users(id),
+    provider_id uuid NOT NULL REFERENCES frello.service_provider_actors(id),
+    consumer_id uuid NOT NULL REFERENCES frello.service_consumer_actors(id),
 
     creation_time timestamptz DEFAULT now()
 );
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS frello.service_reviews (
     -- Corresponding [Service].
     service_id uuid NOT NULL REFERENCES frello.services(id),
     -- Author.
-    consumer_id uuid NOT NULL REFERENCES frello.service_consumer_users(id),
+    consumer_id uuid NOT NULL REFERENCES frello.service_consumer_actors(id),
 
     -- Review score (from 1 to 5) "stars".
     review_score smallint NOT NULL,
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS frello.page_visit_logs (
 
 CREATE TABLE IF NOT EXISTS frello.admin_logs (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    admin_id uuid NOT NULL REFERENCES frello.admin_users(id),
+    admin_id uuid NOT NULL REFERENCES frello.admin_actors(id),
     log_message text NOT NULL,
     creation_time timestamptz DEFAULT now()
 );

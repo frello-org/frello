@@ -25,7 +25,7 @@
         ];
 
         shellHook = ''
-          . scripts/db.sh
+          . scripts/db/bootstrap.sh
         '';
       };
     });
