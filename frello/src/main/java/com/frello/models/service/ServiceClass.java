@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import com.frello.models.user.ServiceProviderUser;
+import com.frello.models.user.ServiceProviderActor;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +25,7 @@ public class ServiceClass {
 
     @NonNull
     private UUID providerId;
-    private ServiceProviderUser provider;
+    private ServiceProviderActor provider;
 
     @NonNull
     private String title;
@@ -36,7 +36,7 @@ public class ServiceClass {
 
     private boolean isDeleted;
     @NonNull
-    private Instant deletionTime;
+    private OffsetDateTime deletionTime;
     @NonNull
-    private final Instant creationTime;
+    private final OffsetDateTime creationTime;
 }

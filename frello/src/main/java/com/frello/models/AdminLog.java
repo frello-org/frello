@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import com.frello.models.user.AdminUser;
+import com.frello.models.user.AdminActor;
 
 @Data
 @AllArgsConstructor
@@ -21,11 +21,11 @@ public class AdminLog {
 
     @NonNull
     private UUID adminId;
-    private AdminUser admin;
+    private AdminActor admin;
 
     @NonNull
     private String logMessage;
 
     @NonNull
-    private final Instant creationTime;
+    private final OffsetDateTime creationTime;
 }

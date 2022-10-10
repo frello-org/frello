@@ -12,10 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Jacksonized
-public class AdminUser {
+public class AdminActor {
     @NonNull
     private final UUID id;
-    private User user;
-
-    private boolean isEnabled;
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import com.frello.models.user.User;
@@ -33,5 +33,5 @@ public class ServiceMessage {
     private String parsedHTMLBody;
 
     @NonNull
-    private final Instant creationTime;
+    private final OffsetDateTime creationTime;
 }

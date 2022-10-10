@@ -12,10 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Jacksonized
-public class ServiceProviderUser {
+public class ServiceProviderActor {
     @NonNull
     private final UUID id;
-    private User user;
-
-    private boolean isEnabled;
 }

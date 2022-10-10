@@ -6,11 +6,11 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import com.frello.models.user.ServiceConsumerUser;
-import com.frello.models.user.ServiceProviderUser;
+import com.frello.models.user.ServiceConsumerActor;
+import com.frello.models.user.ServiceProviderActor;
 
 @Data
 @AllArgsConstructor
@@ -29,14 +29,14 @@ public class Service {
 
     @NonNull
     private UUID providerId;
-    private ServiceProviderUser provider;
+    private ServiceProviderActor provider;
 
     @NonNull
     private UUID consumerId;
-    private ServiceConsumerUser consumer;
+    private ServiceConsumerActor consumer;
 
     @NonNull
-    private final Instant creationTime;
+    private final OffsetDateTime creationTime;
 
     public enum State {
         IN_PROGRESS,

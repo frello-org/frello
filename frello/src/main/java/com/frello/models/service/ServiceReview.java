@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import com.frello.models.user.ServiceConsumerUser;
+import com.frello.models.user.ServiceConsumerActor;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +25,7 @@ public class ServiceReview {
 
     @NonNull
     private UUID consumerId;
-    private ServiceConsumerUser consumer;
+    private ServiceConsumerActor consumer;
 
     short reviewScore;
 
@@ -36,7 +36,7 @@ public class ServiceReview {
 
     private boolean isDeleted;
     @NonNull
-    private Instant deletedAt;
+    private OffsetDateTime deletedAt;
     @NonNull
-    private final Instant creationTime;
+    private final OffsetDateTime creationTime;
 }

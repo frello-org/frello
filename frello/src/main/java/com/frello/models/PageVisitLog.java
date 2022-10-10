@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import com.frello.models.service.ServiceClass;
@@ -29,5 +29,5 @@ public class PageVisitLog {
     private User user;
 
     @NonNull
-    private final Instant creationTime;
+    private final OffsetDateTime creationTime;
 }

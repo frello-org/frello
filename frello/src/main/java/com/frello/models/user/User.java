@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
@@ -26,7 +26,11 @@ public class User {
 
     private boolean isDeleted;
     @NonNull
-    private Instant deletedAt;
+    private OffsetDateTime deletionTime;
     @NonNull
-    private final Instant creationTime;
+    private final OffsetDateTime creationTime;
+
+    private final AdminActor admin;
+    private final ServiceConsumerActor consumer;
+    private final ServiceProviderActor provider;
 }

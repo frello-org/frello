@@ -1,12 +1,14 @@
 package com.frello.utils.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public final class Mapper {
     private static ObjectMapper objectMapper;
 
     private static ObjectMapper createObjectMapper() {
-        return new ObjectMapper().registerModule(new InstantSerdeModule());
+        return new ObjectMapper()
+                .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     public static ObjectMapper getObjectMapper() {
