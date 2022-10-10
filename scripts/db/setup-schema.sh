@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-if ! echo 'select 1;' | psql &> /dev/null; then
+set -eou pipefail
+
+if ! echo 'select 1;' | psql > /dev/null; then
     >&2 echo "psql is not running properly"
     exit 1
 fi
@@ -15,9 +17,9 @@ if [ $(echo "$has_frello" | psql --quiet -A -t 2> /dev/null) = "1" ]; then
 fi
 
 echo "Creating schema..."
-psql -f scripts/frello.sql &> /dev/null
+psql -f scripts/db/frello.sql > /dev/null
 echo "  done!"
 
 echo "Seeding..."
-psql -f scripts/seed.sql &> /dev/null
+psql -f scripts/db/seed.sql > /dev/null
 echo "  done!"
