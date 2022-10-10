@@ -82,15 +82,15 @@ CREATE TABLE IF NOT EXISTS frello.service_classes (
 );
 
 CREATE TYPE frello.service_state AS ENUM (
-    'in_progress',
-    'completed',
-    'withdrawn'
+    'IN_PROGRESS',
+    'COMPLETED',
+    'WITHDRAWN'
 );
 
 CREATE TABLE IF NOT EXISTS frello.services (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 
-    state frello.service_state NOT NULL DEFAULT 'in_progress',
+    state frello.service_state NOT NULL DEFAULT 'IN_PROGRESS',
 
     class_id uuid NOT NULL REFERENCES frello.service_classes(id),
     provider_id uuid NOT NULL REFERENCES frello.service_provider_users(id),
@@ -117,10 +117,10 @@ CREATE TABLE IF NOT EXISTS frello.service_messages (
 CREATE TABLE IF NOT EXISTS frello.service_reviews (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 
-    -- Author.
-    consumer_id uuid NOT NULL REFERENCES frello.service_consumer_users(id),
     -- Corresponding [Service].
     service_id uuid NOT NULL REFERENCES frello.services(id),
+    -- Author.
+    consumer_id uuid NOT NULL REFERENCES frello.service_consumer_users(id),
 
     -- Review score (from 1 to 5) "stars".
     review_score smallint NOT NULL,
@@ -142,11 +142,13 @@ CREATE TABLE IF NOT EXISTS frello.service_reviews (
 CREATE TABLE IF NOT EXISTS frello.page_visit_logs (
     id bigserial PRIMARY KEY,
     page_id uuid NOT NULL REFERENCES frello.service_classes(id),
-    user_id uuid NOT NULL REFERENCES frello.users(id)
+    user_id uuid NOT NULL REFERENCES frello.users(id),
+    creation_time timestamptz DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS frello.admin_logs (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     admin_id uuid NOT NULL REFERENCES frello.admin_users(id),
-    log_message text NOT NULL
+    log_message text NOT NULL,
+    creation_time timestamptz DEFAULT now()
 );
