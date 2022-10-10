@@ -8,6 +8,5 @@ import lombok.NonNull;
 @Data
 @AllArgsConstructor
 public class AuthInfo {
-    @NonNull
     private final User user;
 }

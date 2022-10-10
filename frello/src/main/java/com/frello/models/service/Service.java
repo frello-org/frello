@@ -7,6 +7,7 @@ import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.frello.models.user.ServiceConsumerActor;
@@ -17,25 +18,19 @@ import com.frello.models.user.ServiceProviderActor;
 @Builder
 @Jacksonized
 public class Service {
-    @NonNull
     private final UUID id;
 
-    @NonNull
     private State state;
 
-    @NonNull
     private UUID classId;
-    private ServiceClass serviceClass;
+    private transient Optional<ServiceClass> serviceClass;
 
-    @NonNull
     private UUID providerId;
-    private ServiceProviderActor provider;
+    private transient Optional<ServiceProviderActor> provider;
 
-    @NonNull
     private UUID consumerId;
-    private ServiceConsumerActor consumer;
+    private transient Optional<ServiceConsumerActor> consumer;
 
-    @NonNull
     private final OffsetDateTime creationTime;
 
     public enum State {

@@ -3,10 +3,10 @@ package com.frello.models.service;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.frello.models.user.ServiceConsumerActor;
@@ -16,27 +16,20 @@ import com.frello.models.user.ServiceConsumerActor;
 @Builder
 @Jacksonized
 public class ServiceReview {
-    @NonNull
     private final UUID id;
 
-    @NonNull
     private UUID serviceId;
-    private Service service;
+    private transient Optional<Service> service;
 
-    @NonNull
     private UUID consumerId;
-    private ServiceConsumerActor consumer;
+    private transient Optional<ServiceConsumerActor> consumer;
 
     short reviewScore;
 
-    @NonNull
     private String rawMarkdownBody;
-    @NonNull
     private String parsedHTMLBody;
 
     private boolean isDeleted;
-    @NonNull
-    private OffsetDateTime deletedAt;
-    @NonNull
+    private Optional<OffsetDateTime> deletionTime;
     private final OffsetDateTime creationTime;
 }
