@@ -3,11 +3,9 @@ package com.frello.models.service;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.frello.models.user.ServiceConsumerActor;
@@ -23,13 +21,13 @@ public class Service {
     private State state;
 
     private UUID classId;
-    private transient Optional<ServiceClass> serviceClass;
+    private ServiceClass serviceClass;
 
     private UUID providerId;
-    private transient Optional<ServiceProviderActor> provider;
+    private ServiceProviderActor provider;
 
     private UUID consumerId;
-    private transient Optional<ServiceConsumerActor> consumer;
+    private ServiceConsumerActor consumer;
 
     private final OffsetDateTime creationTime;
 

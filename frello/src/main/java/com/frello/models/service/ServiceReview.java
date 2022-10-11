@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.frello.models.user.ServiceConsumerActor;
@@ -19,10 +18,10 @@ public class ServiceReview {
     private final UUID id;
 
     private UUID serviceId;
-    private transient Optional<Service> service;
+    private Service service;
 
     private UUID consumerId;
-    private transient Optional<ServiceConsumerActor> consumer;
+    private ServiceConsumerActor consumer;
 
     short reviewScore;
 
@@ -30,6 +29,6 @@ public class ServiceReview {
     private String parsedHTMLBody;
 
     private boolean deleted;
-    private Optional<OffsetDateTime> deletionTime;
+    private OffsetDateTime deletionTime;
     private final OffsetDateTime creationTime;
 }

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.frello.models.user.User;
@@ -19,10 +18,10 @@ public class ServiceMessage {
     private final UUID id;
 
     private UUID serviceId;
-    private transient Optional<Service> service;
+    private Service service;
 
     private UUID authorId;
-    private transient Optional<User> author;
+    private User author;
 
     private String rawMarkdownBody;
     private String parsedHTMLBody;

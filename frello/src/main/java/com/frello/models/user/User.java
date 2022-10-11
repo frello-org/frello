@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Data
@@ -21,10 +20,10 @@ public class User {
     private String lastName;
 
     private boolean deleted;
-    private Optional<OffsetDateTime> deletionTime;
+    private OffsetDateTime deletionTime;
     private final OffsetDateTime creationTime;
 
-    private final Optional<AdminActor> admin;
-    private final Optional<ServiceConsumerActor> consumer;
-    private final Optional<ServiceProviderActor> provider;
+    private final AdminActor admin;
+    private final ServiceConsumerActor consumer;
+    private final ServiceProviderActor provider;
 }

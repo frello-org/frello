@@ -60,16 +60,16 @@ public class SQLUserDAO implements UserDAO {
                     .firstName(set.getString("first_name"))
                     .lastName(set.getString("last_name"))
                     .deleted(set.getBoolean("is_deleted"))
-                    .deletionTime(Optional.ofNullable(set.getObject("deletion_time", OffsetDateTime.class)))
+                    .deletionTime(set.getObject("deletion_time", OffsetDateTime.class))
                     .creationTime(set.getObject("creation_time", OffsetDateTime.class));
             if (set.getBoolean("is_admin")) {
-                user.admin(Optional.of(new AdminActor(id)));
+                user.admin(new AdminActor(id));
             }
             if (set.getBoolean("is_consumer")) {
-                user.consumer(Optional.of(new ServiceConsumerActor(id)));
+                user.consumer(new ServiceConsumerActor(id));
             }
             if (set.getBoolean("is_provider")) {
-                user.provider(Optional.of(new ServiceProviderActor(id)));
+                user.provider(new ServiceProviderActor(id));
             }
 
             return Optional.of(user.build());
