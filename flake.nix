@@ -25,6 +25,7 @@
         ];
 
         shellHook = ''
+          . scripts/env.sh
           . scripts/db/bootstrap.sh
         '';
       };
