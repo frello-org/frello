@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export DBROOT="$(pwd)/.postgresql"
+export DBROOT="$PWD/.postgresql"
 export PGDATA="$DBROOT/data"
 export LOG_PATH="$DBROOT/log"
 
@@ -9,7 +9,7 @@ if [ ! -d "$DBROOT" ]; then
 fi
 
 info() {
-    echo "[info]" $@
+    echo "[info]" "$@"
 }
 
 if [ ! -d "$PGDATA" ]; then
@@ -18,5 +18,5 @@ if [ ! -d "$PGDATA" ]; then
 fi
 
 if ! pg_ctl status; then
-    info "the database server is not running, run \`pg_ctl start\` to start it"
+    info "the database server is not running, run \`pg_ctl start -l \"\$LOG_PATH\"\` to start it"
 fi

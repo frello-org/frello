@@ -10,7 +10,7 @@ fi
 has_frello="SELECT count(*) FROM information_schema.schemata
                 WHERE schema_name = 'frello';"
 
-if [ $(echo "$has_frello" | psql --quiet -A -t 2> /dev/null) = "1" ]; then
+if [ "$(echo "$has_frello" | psql --quiet -A -t 2> /dev/null)" = "1" ]; then
     echo "Reseting schema..."
     echo 'DROP SCHEMA frello CASCADE;' | psql &> /dev/null
     echo "  done!"
