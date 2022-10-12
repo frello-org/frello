@@ -9,4 +9,6 @@ public interface UserDAO {
     Optional<User> user(UUID id);
 
     Optional<User> user(String id);
+
+    void create(User user) throws CreateUserException;
 }

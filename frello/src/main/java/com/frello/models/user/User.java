@@ -19,6 +19,7 @@ public class User {
     private String username;
     @JsonIgnore
     private transient String passwordHash;
+    private String email;
 
     private String firstName;
     private String lastName;

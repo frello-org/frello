@@ -1,9 +1,12 @@
 package com.frello.daos.user;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.postgresql.util.PSQLException;
 
 import com.frello.lib.DB;
 import com.frello.lib.InternalException;
@@ -42,7 +45,7 @@ public class SQLUserDAO implements UserDAO {
                     LEFT JOIN frello.service_consumer_actors AS c USING (id)
                 WHERE u.%s = ? AND NOT u.is_deleted;
                 """,
-                column); // <----- (!) (!) (!)
+                column);
 
         try (var conn = DB.getConnection()) {
             var stmt = conn.prepareStatement(query);
@@ -74,6 +77,73 @@ public class SQLUserDAO implements UserDAO {
             }
 
             return Optional.of(user.build());
+        } catch (SQLException sqlEx) {
+            throw new InternalException(sqlEx);
+        }
+    }
+
+    @Override
+    public void create(User user) throws CreateUserException {
+        try {
+            DB.inTransaction((conn) -> {
+                PreparedStatement stmt;
+
+                stmt = conn.prepareStatement("""
+                        INSERT INTO frello.users (
+                            id, username, password_hash, email,
+                            first_name, last_name,
+                            is_deleted, deletion_time, creation_time
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                        """);
+                stmt.setObject(1, user.getId());
+                stmt.setString(2, user.getUsername());
+                stmt.setString(3, user.getPasswordHash());
+                stmt.setString(4, user.getEmail());
+                stmt.setString(5, user.getFirstName());
+                stmt.setString(6, user.getLastName());
+                stmt.setBoolean(7, user.isDeleted());
+                stmt.setObject(8, user.getDeletionTime());
+                stmt.setObject(9, user.getCreationTime());
+                DB.mustUpdate(stmt, 1);
+
+                // Here goes duplication!
+                if (user.isAdmin()) {
+                    stmt = conn.prepareStatement("""
+                                INSERT INTO frello.admin_actors
+                                    (id, is_enabled) VALUES (?, true);
+                            """);
+                    stmt.setObject(1, user.getId());
+                    DB.mustUpdate(stmt, 1);
+                }
+                if (user.isConsumer()) {
+                    stmt = conn.prepareStatement("""
+                                INSERT INTO frello.service_consumer_actors
+                                    (id, is_enabled) VALUES (?, true);
+                            """);
+                    stmt.setObject(1, user.getId());
+                    DB.mustUpdate(stmt, 1);
+                }
+                if (user.isProvider()) {
+                    stmt = conn.prepareStatement("""
+                                INSERT INTO frello.service_provider_actors
+                                    (id, is_enabled) VALUES (?, true);
+                            """);
+                    stmt.setObject(1, user.getId());
+                    DB.mustUpdate(stmt, 1);
+                }
+
+                return null;
+            });
+        } catch (PSQLException pgEx) {
+            var constraint = pgEx.getServerErrorMessage().getConstraint();
+            switch (constraint) {
+                case "users_username_key":
+                    throw new CreateUserException(CreateUserException.Code.CONFLICTING_USERNAME);
+                case "users_email_key":
+                    throw new CreateUserException(CreateUserException.Code.CONFLICTING_EMAIL);
+                default:
+                    throw new InternalException(pgEx);
+            }
         } catch (SQLException sqlEx) {
             throw new InternalException(sqlEx);
         }

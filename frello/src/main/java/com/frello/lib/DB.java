@@ -1,6 +1,7 @@
 package com.frello.lib;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -34,5 +35,35 @@ public class DB {
 
     public static Connection getConnection() throws SQLException {
         return ds.getConnection();
+    }
+
+    public static <R, E extends Exception> R inTransaction(TransactionContext<R, E> ctx)
+            throws E, SQLException {
+        try (var conn = getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                var ret = ctx.apply(conn);
+                conn.commit();
+                return ret;
+            } catch (Exception ex) {
+                conn.rollback();
+                throw ex;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+    }
+
+    public static void mustUpdate(PreparedStatement stmt, int count) throws SQLException {
+        var realCount = stmt.executeUpdate();
+        if (realCount != count) {
+            var message = String.format("Should have updated %d rows, got %d", count, realCount);
+            throw new InternalException(message);
+        }
+    }
+
+    @FunctionalInterface
+    public interface TransactionContext<R, E extends Exception> {
+        R apply(Connection conn) throws E;
     }
 }

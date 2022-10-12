@@ -54,6 +54,9 @@ public class HttpAdapter {
         try {
             var resp = responder.apply();
             json = makeJSON(resp);
+            if (res.status() != status) {
+                status = res.status();
+            }
         } catch (HttpException e) {
             json = makeJSON(new UserError(e.getUserMessage()));
             status = e.getStatus();
@@ -71,7 +74,7 @@ public class HttpAdapter {
 
     @Data
     @AllArgsConstructor
-    private static class ResponseBody<T> {
+    public static class ResponseBody<T> {
         T data;
     }
 

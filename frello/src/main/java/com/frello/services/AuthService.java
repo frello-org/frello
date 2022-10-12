@@ -9,10 +9,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.frello.daos.user.CreateUserException;
 import com.frello.daos.user.SQLUserDAO;
 import com.frello.daos.user.UserDAO;
 import com.frello.lib.Env;
 import com.frello.lib.Hash;
+import com.frello.models.user.ServiceConsumerActor;
+import com.frello.models.user.ServiceProviderActor;
 import com.frello.models.user.User;
 import com.frello.services.common.HttpException;
 import lombok.AllArgsConstructor;
@@ -44,6 +47,54 @@ public class AuthService {
         return new LoginResponse(user, token);
     }
 
+    @Data
+    public static class LoginParams {
+        private String username;
+        private String password;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class LoginResponse {
+        private User user;
+        private String token;
+    }
+
+    public static void register(RegisterParams params) throws HttpException {
+        var id = UUID.randomUUID();
+        var user = User.builder()
+                .id(id)
+                .username(params.getUsername())
+                .passwordHash(Hash.hash(params.getPassword()))
+                .email(params.getEmail())
+                .firstName(params.getFirstName())
+                .lastName(params.getLastName());
+        if (params.isRegisterAsConsumer()) {
+            user.consumer(new ServiceConsumerActor(id));
+        }
+        if (params.isRegisterAsProvider()) {
+            user.provider(new ServiceProviderActor(id));
+        }
+
+        try {
+            userDAO.create(user.build());
+        } catch (CreateUserException e) {
+            var message = String.format("%s: %s", e.getCode().toString(), e.getMessage());
+            throw new HttpException(400, message);
+        }
+    }
+
+    @Data
+    public static class RegisterParams {
+        private String username;
+        private String password;
+        private String email;
+        private String firstName;
+        private String lastName;
+        private boolean registerAsConsumer;
+        private boolean registerAsProvider;
+    }
+
     private static class AuthJWT {
         private static final String ISSUER = "frello";
 
@@ -73,18 +124,5 @@ public class AuthService {
                     .withClaim("isProvider", user.isProvider())
                     .sign(algorithm);
         }
-    }
-
-    @Data
-    public static class LoginParams {
-        private String username;
-        private String password;
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class LoginResponse {
-        private User user;
-        private String token;
     }
 }

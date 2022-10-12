@@ -18,6 +18,15 @@ public class App {
                 });
             });
 
+            post("/register", (req, res) -> {
+                var adapter = new HttpAdapter(req, res);
+                return adapter.adapt(AuthService.RegisterParams.class, (body) -> {
+                    AuthService.register(body);
+                    res.status(201);
+                    return null;
+                });
+            });
+
             get("/me", (req, res) -> {
                 var adapter = new HttpAdapter(req, res);
                 return adapter.adapt(() -> {
