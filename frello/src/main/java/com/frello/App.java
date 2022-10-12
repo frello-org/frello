@@ -6,6 +6,7 @@ import com.frello.services.AuthService;
 import com.frello.services.ServiceCategoryService;
 import com.frello.services.ServiceRequestService;
 import com.frello.services.UserService;
+import com.frello.services.common.External;
 import com.frello.services.common.HttpAdapter;
 
 public class App {
@@ -43,9 +44,11 @@ public class App {
             get("/", (req, res) -> new HttpAdapter(req, res)
                     .adapt(ServiceRequestService::serviceRequests));
 
-            get("/:id", (req, res) -> {
-                return null;
-            });
+            get("/:id", (req, res) -> new HttpAdapter(req, res)
+                    .adapt(() -> {
+                        var id = External.uuid(req.params(":id"));
+                        return ServiceRequestService.serviceRequest(id);
+                    }));
 
             post("/", (req, res) -> {
                 return null;
