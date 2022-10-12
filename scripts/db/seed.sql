@@ -15,6 +15,8 @@ INSERT INTO frello.service_consumer_actors (id)
     SELECT id FROM frello.users WHERE username IN ('luiz', 'yuri', 'fernando');
 
 INSERT INTO frello.service_categories (name, description, hex_css_color) VALUES
+    ('APIs', 'Serviços que envolvem APIs web', '00ff00'),
+    ('Discord', 'Serviços que envolvem as APIs do Discord', '5865f2'),
     ('Programação Web', 'Serviços sobre programação web', '0000ff'),
     ('Programação de Jogos', 'Serviços sobre programação de jogos', 'ff0000'),
     ('Design', 'Serviços sobre design e afins', 'ffc0cb');
@@ -51,13 +53,13 @@ INSERT INTO frello.service_request_category (service_request_id, category_id)
 VALUES
     (
         (SELECT id FROM frello.service_requests WHERE expected_price = 50.00 LIMIT 1),
-        (SELECT id FROM frello.service_categories WHERE name = 'JavaScript' LIMIT 1)
+        (SELECT id FROM frello.service_categories WHERE name = 'APIs' LIMIT 1)
     ),
     (
         (SELECT id FROM frello.service_requests WHERE expected_price = 50.00 LIMIT 1),
         (SELECT id FROM frello.service_categories WHERE name = 'Discord' LIMIT 1)
     ),
     (
-        (SELECT id FROM frello.service_requests WHERE expected_price = 250 LIMIT 1),
-        (SELECT id FROM frello.service_categories WHERE name = 'Java' LIMIT 1)
+        (SELECT id FROM frello.service_requests WHERE expected_price = 250.245 LIMIT 1),
+        (SELECT id FROM frello.service_categories WHERE name = 'Programação Web' LIMIT 1)
     );

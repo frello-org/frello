@@ -4,6 +4,7 @@ import static spark.Spark.*;
 
 import com.frello.services.AuthService;
 import com.frello.services.ServiceCategoryService;
+import com.frello.services.ServiceRequestService;
 import com.frello.services.UserService;
 import com.frello.services.common.HttpAdapter;
 
@@ -39,9 +40,8 @@ public class App {
 
     private static void serviceRequestRoutes() {
         path("/service-requests", () -> {
-            get("/", (req, res) -> {
-                return null;
-            });
+            get("/", (req, res) -> new HttpAdapter(req, res)
+                    .adapt(ServiceRequestService::serviceRequests));
 
             get("/:id", (req, res) -> {
                 return null;

@@ -1,6 +1,7 @@
 package com.frello.models.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.frello.models.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,9 +9,6 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
-
-import com.frello.models.user.ServiceConsumerActor;
-import com.frello.models.user.ServiceProviderActor;
 
 @Data
 @AllArgsConstructor
@@ -27,11 +25,11 @@ public class Service {
 
     private UUID providerId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private ServiceProviderActor provider;
+    private User provider;
 
     private UUID consumerId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private ServiceConsumerActor consumer;
+    private User consumer;
 
     private final OffsetDateTime creationTime;
 

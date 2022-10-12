@@ -94,8 +94,8 @@ CREATE TABLE IF NOT EXISTS frello.service_categories (
 -- N:N mapping from "service_categories" to "service_requests".
 CREATE TABLE IF NOT EXISTS frello.service_request_category (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    category_id uuid REFERENCES frello.service_categories(id),
-    service_request_id uuid REFERENCES frello.service_requests(id),
+    category_id uuid NOT NULL REFERENCES frello.service_categories(id),
+    service_request_id uuid NOT NULL REFERENCES frello.service_requests(id),
     UNIQUE (category_id, service_request_id)
 );
 
