@@ -1,5 +1,6 @@
 package com.frello.models.service;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,13 +21,16 @@ public class Service {
 
     private State state;
 
-    private UUID classId;
-    private ServiceClass serviceClass;
+    private UUID requestId;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private ServiceRequest request;
 
     private UUID providerId;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ServiceProviderActor provider;
 
     private UUID consumerId;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ServiceConsumerActor consumer;
 
     private final OffsetDateTime creationTime;
