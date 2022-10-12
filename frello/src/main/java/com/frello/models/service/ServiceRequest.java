@@ -13,8 +13,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.frello.models.user.ServiceProviderActor;
-
 @Data
 @AllArgsConstructor
 @Builder
