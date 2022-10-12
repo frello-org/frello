@@ -30,4 +30,16 @@ public class User {
     private final AdminActor admin;
     private final ServiceConsumerActor consumer;
     private final ServiceProviderActor provider;
+
+    public boolean isAdmin() {
+        return admin != null;
+    }
+
+    public boolean isConsumer() {
+        return consumer != null;
+    }
+
+    public boolean isProvider() {
+        return provider != null;
+    }
 }

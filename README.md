@@ -17,14 +17,11 @@ ambientes de desenvolvimento reproduzíveis.
 ### Back-end
 
 Esta aplicação utiliza um banco de dados PostgreSQL, e assume uma instância em
-funcionamento. A aplicação requer que estas variáveis de ambiente estejam
-definidas:
+funcionamento.
 
-- `PGHOST`
-- `PGPORT`
-- `PGDATABASE`
-- `PGUSER`
-- `PGPASSWORD`
+A aplicação requer que algumas variáveis de ambiente sejam definidas. Para o
+desenvolvimento local, verificar as definições em `scripts/env.sh`, que é
+automaticamente importado se estiver no Nix shell.
 
 Se está utilizando Nix, após entrar no shell utilizando `nix develop`, execute
 `pg_ctl start` para inicializar servidor do banco de dados.

@@ -40,7 +40,7 @@ public class SQLUserDAO implements UserDAO {
                     LEFT JOIN frello.admin_actors AS a USING (id)
                     LEFT JOIN frello.service_provider_actors AS p USING (id)
                     LEFT JOIN frello.service_consumer_actors AS c USING (id)
-                WHERE u.%s = ?;
+                WHERE u.%s = ? AND NOT u.is_deleted;
                 """,
                 column); // <----- (!) (!) (!)
 
