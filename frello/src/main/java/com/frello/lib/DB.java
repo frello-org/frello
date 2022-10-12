@@ -9,11 +9,11 @@ public class DB {
     private static BasicDataSource ds = new BasicDataSource();
 
     static {
-        var host = env("PGHOST");
-        var port = env("PGPORT");
-        var database = env("PGDATABASE");
-        var password = env("PGPASSWORD");
-        var user = env("PGUSER");
+        var host = Env.get("PGHOST");
+        var port = Env.get("PGPORT");
+        var database = Env.get("PGDATABASE");
+        var password = Env.get("PGPASSWORD");
+        var user = Env.get("PGUSER");
 
         var url = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
 
@@ -34,14 +34,5 @@ public class DB {
 
     public static Connection getConnection() throws SQLException {
         return ds.getConnection();
-    }
-
-    private static String env(String name) {
-        var value = System.getenv(name);
-        if (value == null) {
-            throw new RuntimeException(String.format(
-                    "Missing required environment variable `%s`", name));
-        }
-        return value;
     }
 }

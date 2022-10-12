@@ -31,7 +31,7 @@ public class SQLUserDAO implements UserDAO {
         // SAFETY: If not careful this could lead to an SQL Injection attack.
         // DO NOT ADD QUERY PARAMETERS HERE.
         var query = String.format("""
-                    SELECT u.id, u.username, u.first_name, u.last_name,
+                    SELECT u.id, u.username, u.password_hash, u.first_name, u.last_name,
                     u.is_deleted, u.deletion_time, u.creation_time,
                     a.is_enabled AS is_admin,
                     p.is_enabled AS is_provider,
@@ -57,6 +57,7 @@ public class SQLUserDAO implements UserDAO {
             var user = User.builder()
                     .id(id)
                     .username(set.getString("username"))
+                    .passwordHash(set.getString("password_hash"))
                     .firstName(set.getString("first_name"))
                     .lastName(set.getString("last_name"))
                     .deleted(set.getBoolean("is_deleted"))

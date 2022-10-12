@@ -1,8 +1,8 @@
-INSERT INTO frello.users (username, first_name, last_name) VALUES
-    ('luiz', 'Luiz Felipe', 'Gonçalves'),
-    ('yuri', 'Yuri', 'Rousseff'),
-    ('edu', 'Eduardo', 'Lemos'),
-    ('fernando', 'Fernando', 'Araujo');
+INSERT INTO frello.users (username, first_name, last_name, password_hash) VALUES
+    ('luiz', 'Luiz Felipe', 'Gonçalves', '$argon2i$v=19$m=8192,t=10,p=1$e5fRnYjHNGchOoW0j6IqDw$6uldhp9jQAEEHBTiAtzG0kjxp6kq4LLLqMXaQ4+rZKI'),
+    ('yuri', 'Yuri', 'Rousseff',         '$argon2i$v=19$m=8192,t=10,p=1$e5fRnYjHNGchOoW0j6IqDw$6uldhp9jQAEEHBTiAtzG0kjxp6kq4LLLqMXaQ4+rZKI'),
+    ('edu', 'Eduardo', 'Lemos',          '$argon2i$v=19$m=8192,t=10,p=1$e5fRnYjHNGchOoW0j6IqDw$6uldhp9jQAEEHBTiAtzG0kjxp6kq4LLLqMXaQ4+rZKI'),
+    ('fernando', 'Fernando', 'Araujo',   '$argon2i$v=19$m=8192,t=10,p=1$e5fRnYjHNGchOoW0j6IqDw$6uldhp9jQAEEHBTiAtzG0kjxp6kq4LLLqMXaQ4+rZKI');
 
 INSERT INTO frello.admin_actors (id, is_enabled) VALUES
     ((SELECT id FROM frello.users WHERE username = 'luiz'), true),

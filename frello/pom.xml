@@ -72,6 +72,13 @@
       <artifactId>jackson-datatype-jdk8</artifactId>
       <version>2.13.3</version>
     </dependency>
+
+    <!-- argon2 -->
+    <dependency>
+      <groupId>de.mkammerer</groupId>
+      <artifactId>argon2-jvm</artifactId>
+      <version>2.11</version>
+    </dependency>
   </dependencies>
 
   <build>

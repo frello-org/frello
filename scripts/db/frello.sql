@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS frello.users (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 
     username varchar(32) NOT NULL UNIQUE,
+    password_hash text NOT NULL,
+    email text NOT NULL UNIQUE,
 
     first_name varchar(256) NOT NULL,
     last_name varchar(256) NOT NULL,

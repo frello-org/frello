@@ -8,6 +8,8 @@ import lombok.extern.jackson.Jacksonized;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @AllArgsConstructor
 @Builder
@@ -15,6 +17,8 @@ import java.util.UUID;
 public class User {
     private final UUID id;
     private String username;
+    @JsonIgnore
+    private transient String passwordHash;
 
     private String firstName;
     private String lastName;
