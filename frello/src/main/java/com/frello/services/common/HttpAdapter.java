@@ -67,7 +67,7 @@ public class HttpAdapter {
         return json;
     }
 
-    private static <T> String makeJSON(T data) throws IOException {
+    public static <T> String makeJSON(T data) throws IOException {
         var body = new ResponseBody<>(data);
         return Mapper.getObjectMapper().writeValueAsString(body);
     }
@@ -80,7 +80,7 @@ public class HttpAdapter {
 
     @Data
     @AllArgsConstructor
-    private static class UserError {
+    public static class UserError {
         private String message;
     }
 

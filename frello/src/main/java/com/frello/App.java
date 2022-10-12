@@ -13,6 +13,18 @@ public class App {
     public static void main(String[] args) {
         port(3333);
 
+        notFound((req, res) -> {
+            res.header("Content-Type", "application/json");
+            res.status(404);
+            return HttpAdapter.makeJSON(new HttpAdapter.UserError("Not found"));
+        });
+
+        internalServerError((req, res) -> {
+            res.header("Content-Type", "application/json");
+            res.status(500);
+            return HttpAdapter.makeJSON(new HttpAdapter.UserError("Internal server error"));
+        });
+
         serviceRoutes();
         serviceCategoryRoutes();
         serviceRequestRoutes();

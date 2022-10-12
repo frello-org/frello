@@ -2,7 +2,6 @@ package com.frello.lib;
 
 import java.util.Optional;
 
-// XX: Check me at boundary!
 public class InternalException extends RuntimeException {
     public final Optional<Throwable> cause;
 
