@@ -3,29 +3,59 @@ package com.frello.services.common;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import spark.Request;
 import spark.Response;
 
 import com.frello.lib.json.Mapper;
+import com.frello.models.user.User;
+import com.frello.services.AuthService;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 public class HttpAdapter {
     static ObjectMapper objectMapper = Mapper.getObjectMapper();
 
-    public static <T, U> String adapt(Request req, Response res, Class<T> bodyType, Handler<T, U> handler)
-            throws IOException {
-        var rawBody = req.body();
-        var parsedBody = objectMapper.readValue(rawBody, bodyType);
+    private Request req;
+    private Response res;
 
-        int status = 200;
+    public HttpAdapter(Request req, Response res) {
+        this.req = req;
+        this.res = res;
+    }
+
+    public <I, O> String adapt(Class<I> bodyType, Handler<I, O> handler) throws IOException {
+        var requestBody = objectMapper.readValue(req.body(), bodyType);
+        return adaptResponse(() -> handler.apply(requestBody));
+    }
+
+    public <O> String adapt(Responder<O> responder) throws IOException {
+        return adaptResponse(() -> responder.apply());
+    }
+
+    public <O> O guard(Handler<User, O> guardedContext) throws HttpException {
+        var token = req.headers("Authorization");
+        if (token == null || token.isBlank()) {
+            throw new HttpException(401, "Missing `Authorization` token");
+        }
+
+        var parts = token.split(" ");
+        if (parts.length != 2 || !parts[0].equalsIgnoreCase("bearer")) {
+            throw new HttpException(401, "Malformed `Authorization` token, expected `Bearer <token>`");
+        }
+
+        var user = AuthService.authorize(parts[1]);
+        return guardedContext.apply(user);
+    }
+
+    private <T> String adaptResponse(Responder<T> responder) throws IOException {
         String json;
+        int status = 200;
         try {
-            var responseBody = handler.apply(parsedBody);
-            json = makeResponseBody(responseBody);
+            var resp = responder.apply();
+            json = makeJSON(resp);
         } catch (HttpException e) {
-            var error = new ErrorResponseBody(e.getUserMessage());
-            json = makeResponseBody(error);
+            json = makeJSON(new UserError(e.getUserMessage()));
             status = e.getStatus();
         }
 
@@ -34,9 +64,9 @@ public class HttpAdapter {
         return json;
     }
 
-    private static <T> String makeResponseBody(T data) throws IOException {
+    private static <T> String makeJSON(T data) throws IOException {
         var body = new ResponseBody<>(data);
-        return objectMapper.writeValueAsString(body);
+        return Mapper.getObjectMapper().writeValueAsString(body);
     }
 
     @Data
@@ -47,12 +77,17 @@ public class HttpAdapter {
 
     @Data
     @AllArgsConstructor
-    private static class ErrorResponseBody {
+    private static class UserError {
         private String message;
     }
 
     @FunctionalInterface
     public interface Handler<T, R> {
-        R apply(T t) throws HttpException;
+        R apply(T val) throws HttpException;
+    }
+
+    @FunctionalInterface
+    public interface Responder<T> {
+        T apply() throws HttpException;
     }
 }
