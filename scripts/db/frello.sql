@@ -43,37 +43,16 @@ CREATE TABLE IF NOT EXISTS frello.service_consumer_actors (
 );
 
 --------------------------------------------------------------------------------
--- Categories
+-- Services
 --------------------------------------------------------------------------------
 
--- The `service_categories` contains categories of services available to be
--- performed in the platform.
-CREATE TABLE IF NOT EXISTS frello.service_categories (
+CREATE TABLE IF NOT EXISTS frello.service_requests (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 
+    -- Author ID.
+    consumer_id uuid NOT NULL REFERENCES frello.service_consumer_actors(id),
 
-    name varchar(512) NOT NULL,
-    description text NOT NULL,
-
-    hex_css_color varchar(6) NOT NULL DEFAULT '000000'
-);
-
---------------------------------------------------------------------------------
--- Service Pages and Services
---
--- A [Service Class] allows a [Service Provider User] to announce its work under
--- an specific category. Publicly, it's represented as a "service page", where
--- consumers may demonstrate interest in contracting the provider.
---
--- A [Service] is an "instance" of an specific [Service Class].
---------------------------------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS frello.service_classes (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    category_id uuid REFERENCES frello.service_categories(id),
-
-    provider_id uuid NOT NULL REFERENCES frello.service_provider_actors(id),
-
+    expected_price DECIMAL(20, 6) NOT NULL,
     title text NOT NULL,
     raw_markdown_page_body text NOT NULL,
     parsed_html_page_body text NOT NULL, -- Derived in the server.
@@ -94,13 +73,34 @@ CREATE TABLE IF NOT EXISTS frello.services (
 
     state frello.service_state NOT NULL DEFAULT 'IN_PROGRESS',
 
-    class_id uuid NOT NULL REFERENCES frello.service_classes(id),
+    request_id uuid NOT NULL REFERENCES frello.service_requests(id),
     provider_id uuid NOT NULL REFERENCES frello.service_provider_actors(id),
     consumer_id uuid NOT NULL REFERENCES frello.service_consumer_actors(id),
 
     creation_time timestamptz DEFAULT now()
 );
 
+-- The `service_categories` contains categories of services available to be
+-- performed in the platform.
+CREATE TABLE IF NOT EXISTS frello.service_categories (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    name varchar(512) NOT NULL,
+    description text NOT NULL,
+
+    hex_css_color varchar(6) NOT NULL DEFAULT '000000'
+);
+
+-- N:N mapping from "service_categories" to "service_requests".
+CREATE TABLE IF NOT EXISTS frello.service_request_category (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    category_id uuid REFERENCES frello.service_categories(id),
+    service_request_id uuid REFERENCES frello.service_requests(id),
+    UNIQUE (category_id, service_request_id)
+);
+
+-- NOT YET IMPLEMENTED.
+--
 -- A [Service Message] represents a conversation visible within a [Service]
 -- page. A message can not be updated or deleted.
 CREATE TABLE IF NOT EXISTS frello.service_messages (
@@ -114,6 +114,8 @@ CREATE TABLE IF NOT EXISTS frello.service_messages (
     creation_time timestamptz DEFAULT now()
 );
 
+-- NOT YET IMPLEMENTED.
+--
 -- A [Service Class Review] represents a consumer's review over a finished (be
 -- it `completed` or `withdrawn`) [Service].
 CREATE TABLE IF NOT EXISTS frello.service_reviews (
@@ -141,13 +143,15 @@ CREATE TABLE IF NOT EXISTS frello.service_reviews (
 -- Misc
 --------------------------------------------------------------------------------
 
+-- NOT YET IMPLEMENTED.
 CREATE TABLE IF NOT EXISTS frello.page_visit_logs (
     id bigserial PRIMARY KEY,
-    page_id uuid NOT NULL REFERENCES frello.service_classes(id),
+    page_id uuid NOT NULL REFERENCES frello.service_requests(id),
     user_id uuid NOT NULL REFERENCES frello.users(id),
     creation_time timestamptz DEFAULT now()
 );
 
+-- NOT YET IMPLEMENTED.
 CREATE TABLE IF NOT EXISTS frello.admin_logs (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     admin_id uuid NOT NULL REFERENCES frello.admin_actors(id),
