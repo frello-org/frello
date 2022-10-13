@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ServiceRequestService {
-    private static ServiceRequestDAO serviceRequestDAO = new SQLServiceRequestDAO();
+    private static final ServiceRequestDAO serviceRequestDAO = new SQLServiceRequestDAO();
 
     public static ServiceRequest serviceRequest(UUID id) throws HttpException {
         return serviceRequestDAO

@@ -16,8 +16,8 @@ import lombok.Data;
 public class HttpAdapter {
     static ObjectMapper objectMapper = Mapper.getObjectMapper();
 
-    private Request req;
-    private Response res;
+    private final Request req;
+    private final Response res;
 
     public HttpAdapter(Request req, Response res) {
         this.req = req;
@@ -29,20 +29,18 @@ public class HttpAdapter {
         try {
             requestBody = objectMapper.readValue(req.body(), bodyType);
         } catch (IOException e) {
-            System.err.println(e);
             res.status(400);
-            var message = String.format("Could not deserialize body");
-            return makeJSON(new UserError(message));
+            return makeJSON(new UserError("Could not deserialize body"));
         }
         return adaptResponse(() -> handler.apply(requestBody));
     }
 
     public <O> String adapt(Responder<O> responder) throws IOException {
-        return adaptResponse(() -> responder.apply());
+        return adaptResponse(responder);
     }
 
     public <O> String adaptWithGuard(Handler<User, O> guardedContext) throws HttpException, IOException {
-        return adapt(() -> guard((user) -> guardedContext.apply(user)));
+        return adapt(() -> guard(guardedContext));
     }
 
     public <O> O guard(Handler<User, O> guardedContext) throws HttpException {

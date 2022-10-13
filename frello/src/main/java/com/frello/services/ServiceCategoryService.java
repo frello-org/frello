@@ -7,7 +7,7 @@ import com.frello.models.service.ServiceCategory;
 import java.util.List;
 
 public class ServiceCategoryService {
-    private static ServiceCategoryDAO serviceCategoryDAO = new SQLServiceCategoryDAO();
+    private static final ServiceCategoryDAO serviceCategoryDAO = new SQLServiceCategoryDAO();
 
     public static List<ServiceCategory> categories() {
         return serviceCategoryDAO.categories();

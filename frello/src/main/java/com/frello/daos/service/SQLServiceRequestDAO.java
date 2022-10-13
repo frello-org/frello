@@ -14,8 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class SQLServiceRequestDAO implements ServiceRequestDAO {
-    private static UserDAO userDAO = new SQLUserDAO();
-    private static ServiceCategoryDAO categoryDAO = new SQLServiceCategoryDAO();
+    private static final UserDAO userDAO = new SQLUserDAO();
+    private static final ServiceCategoryDAO categoryDAO = new SQLServiceCategoryDAO();
 
     @Override
     public Optional<ServiceRequest> serviceRequest(UUID id) {

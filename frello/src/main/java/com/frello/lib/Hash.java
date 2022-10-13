@@ -4,9 +4,9 @@ import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
 public class Hash {
-    private static Argon2 argon2;
-    private static int iterations;
-    private static int memory;
+    private static final Argon2 argon2;
+    private static final int iterations;
+    private static final int memory;
 
     static {
         argon2 = Argon2Factory.create();

@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public class CreateUserException extends Exception {
     @Getter
-    private Code code;
+    private final Code code;
 
     public CreateUserException(Code code) {
         super("Could not create user");

@@ -4,13 +4,13 @@ import lombok.Getter;
 
 public class HttpException extends Exception {
     @Getter
-    private int status;
+    private final int status;
 
     @Getter
-    private String userMessage;
+    private final String userMessage;
 
     @Getter
-    private Throwable cause;
+    private final Throwable cause;
 
     public HttpException(int status, String userMessage) {
         this(status, userMessage, null);

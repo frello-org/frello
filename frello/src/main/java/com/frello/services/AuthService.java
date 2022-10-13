@@ -25,7 +25,7 @@ import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
 public class AuthService {
-    private static UserDAO userDAO = new SQLUserDAO();
+    private static final UserDAO userDAO = new SQLUserDAO();
 
     public static User authorize(String token) throws HttpException {
         var userId = AuthJWT
@@ -116,8 +116,8 @@ public class AuthService {
     private static class AuthJWT {
         private static final String ISSUER = "frello";
 
-        private static Algorithm algorithm = Algorithm.HMAC512(Env.get("JWT_SECRET"));
-        private static JWTVerifier verifier = JWT.require(algorithm)
+        private static final Algorithm algorithm = Algorithm.HMAC512(Env.get("JWT_SECRET"));
+        private static final JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(ISSUER)
                 .build();
 
