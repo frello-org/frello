@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.frello.lib.exceptions.ConflictException;
 import org.postgresql.util.PSQLException;
 
 import com.frello.lib.DB;
@@ -85,7 +86,7 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void create(User user) throws CreateUserException {
+    public void create(User user) throws ConflictException {
         try {
             DB.inTransaction((conn) -> {
                 PreparedStatement stmt;
@@ -144,10 +145,10 @@ public class SQLUserDAO implements UserDAO {
 
             switch (constraint) {
                 case "users_username_key" -> {
-                    throw new CreateUserException(CreateUserException.Code.CONFLICTING_USERNAME);
+                    throw new ConflictException("user", "username");
                 }
                 case "users_email_key" -> {
-                    throw new CreateUserException(CreateUserException.Code.CONFLICTING_EMAIL);
+                    throw new ConflictException("user", "email");
                 }
                 default -> {
                     throw new InternalException(pgEx);

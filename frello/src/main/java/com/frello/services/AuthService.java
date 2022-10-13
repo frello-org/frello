@@ -10,11 +10,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import com.frello.daos.user.CreateUserException;
 import com.frello.daos.user.SQLUserDAO;
 import com.frello.daos.user.UserDAO;
 import com.frello.lib.FrelloConfig;
 import com.frello.lib.Hash;
+import com.frello.lib.exceptions.ConflictException;
 import com.frello.models.user.ServiceConsumerActor;
 import com.frello.models.user.ServiceProviderActor;
 import com.frello.models.user.User;
@@ -91,9 +91,8 @@ public class AuthService {
 
         try {
             userDAO.create(user.build());
-        } catch (CreateUserException e) {
-            var message = String.format("%s: %s", e.getCode().toString(), e.getMessage());
-            throw new HttpException(400, message);
+        } catch (ConflictException conflictEx) {
+            throw new HttpException(conflictEx);
         }
     }
 

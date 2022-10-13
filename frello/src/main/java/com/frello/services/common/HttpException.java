@@ -1,5 +1,7 @@
 package com.frello.services.common;
 
+import com.frello.lib.exceptions.ConflictException;
+import com.frello.lib.exceptions.NotFoundException;
 import lombok.Getter;
 
 public class HttpException extends Exception {
@@ -22,5 +24,13 @@ public class HttpException extends Exception {
         this.status = status;
         this.userMessage = userMessage;
         this.cause = cause;
+    }
+
+    public HttpException(ConflictException conflictEx) {
+        this(400, conflictEx.getMessage());
+    }
+
+    public HttpException(NotFoundException notFoundEx) {
+        this(404, notFoundEx.getMessage());
     }
 }

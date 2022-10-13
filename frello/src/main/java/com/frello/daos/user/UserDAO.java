@@ -3,6 +3,7 @@ package com.frello.daos.user;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.frello.lib.exceptions.ConflictException;
 import com.frello.models.user.User;
 
 public interface UserDAO {
@@ -10,5 +11,5 @@ public interface UserDAO {
 
     Optional<User> user(String id);
 
-    void create(User user) throws CreateUserException;
+    void create(User user) throws ConflictException;
 }
