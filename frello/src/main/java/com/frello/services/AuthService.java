@@ -19,7 +19,10 @@ import com.frello.models.user.ServiceProviderActor;
 import com.frello.models.user.User;
 import com.frello.services.common.HttpException;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
+import lombok.extern.jackson.Jacksonized;
 
 public class AuthService {
     private static UserDAO userDAO = new SQLUserDAO();
@@ -48,15 +51,23 @@ public class AuthService {
     }
 
     @Data
+    @Builder
+    @Jacksonized
     public static class LoginParams {
+        @NonNull
         private String username;
+        @NonNull
         private String password;
     }
 
     @Data
     @AllArgsConstructor
+    @Builder
+    @Jacksonized
     public static class LoginResponse {
+        @NonNull
         private User user;
+        @NonNull
         private String token;
     }
 
@@ -85,11 +96,18 @@ public class AuthService {
     }
 
     @Data
+    @Builder
+    @Jacksonized
     public static class RegisterParams {
+        @NonNull
         private String username;
+        @NonNull
         private String password;
+        @NonNull
         private String email;
+        @NonNull
         private String firstName;
+        @NonNull
         private String lastName;
         private boolean registerAsConsumer;
         private boolean registerAsProvider;

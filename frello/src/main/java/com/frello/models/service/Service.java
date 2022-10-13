@@ -5,6 +5,7 @@ import com.frello.models.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.OffsetDateTime;
@@ -15,18 +16,23 @@ import java.util.UUID;
 @Builder
 @Jacksonized
 public class Service {
+    @NonNull
     private final UUID id;
 
+    @NonNull
     private State state;
 
+    @NonNull
     private UUID requestId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ServiceRequest request;
 
+    @NonNull
     private UUID providerId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private User provider;
 
+    @NonNull
     private UUID consumerId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private User consumer;

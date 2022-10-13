@@ -34,17 +34,18 @@ public class SQLUserDAO implements UserDAO {
         // SAFETY: If not careful this could lead to an SQL Injection attack.
         // DO NOT ADD QUERY PARAMETERS HERE.
         var query = String.format("""
-                SELECT u.id, u.username, u.password_hash, u.first_name, u.last_name,
-                    u.is_deleted, u.deletion_time, u.creation_time,
-                    a.is_enabled AS is_admin,
-                    p.is_enabled AS is_provider,
-                    c.is_enabled AS is_consumer
-                FROM frello.users AS u
-                    LEFT JOIN frello.admin_actors AS a USING (id)
-                    LEFT JOIN frello.service_provider_actors AS p USING (id)
-                    LEFT JOIN frello.service_consumer_actors AS c USING (id)
-                WHERE u.%s = ? AND NOT u.is_deleted;
-                """,
+                        SELECT u.id, u.username, u.email, u.password_hash,
+                            u.first_name, u.last_name,
+                            u.is_deleted, u.deletion_time, u.creation_time,
+                            a.is_enabled AS is_admin,
+                            p.is_enabled AS is_provider,
+                            c.is_enabled AS is_consumer
+                        FROM frello.users AS u
+                            LEFT JOIN frello.admin_actors AS a USING (id)
+                            LEFT JOIN frello.service_provider_actors AS p USING (id)
+                            LEFT JOIN frello.service_consumer_actors AS c USING (id)
+                        WHERE u.%s = ? AND NOT u.is_deleted;
+                        """,
                 column);
 
         try (var conn = DB.getConnection()) {
@@ -60,6 +61,7 @@ public class SQLUserDAO implements UserDAO {
             var user = User.builder()
                     .id(id)
                     .username(set.getString("username"))
+                    .email(set.getString("email"))
                     .passwordHash(set.getString("password_hash"))
                     .firstName(set.getString("first_name"))
                     .lastName(set.getString("last_name"))
@@ -137,12 +139,15 @@ public class SQLUserDAO implements UserDAO {
         } catch (PSQLException pgEx) {
             var constraint = pgEx.getServerErrorMessage().getConstraint();
             switch (constraint) {
-                case "users_username_key":
+                case "users_username_key" -> {
                     throw new CreateUserException(CreateUserException.Code.CONFLICTING_USERNAME);
-                case "users_email_key":
+                }
+                case "users_email_key" -> {
                     throw new CreateUserException(CreateUserException.Code.CONFLICTING_EMAIL);
-                default:
+                }
+                default -> {
                     throw new InternalException(pgEx);
+                }
             }
         } catch (SQLException sqlEx) {
             throw new InternalException(sqlEx);
