@@ -13,13 +13,13 @@ public class DB {
     private static final BasicDataSource ds = new BasicDataSource();
 
     static {
-        var host = Env.get("PGHOST");
-        var port = Env.get("PGPORT");
-        var database = Env.get("PGDATABASE");
-        var password = Env.get("PGPASSWORD");
-        var user = Env.get("PGUSER");
+        var host = FrelloConfig.PGHOST;
+        var port = FrelloConfig.PGPORT;
+        var user = FrelloConfig.PGUSER;
+        var password = FrelloConfig.PGPASSWORD;
+        var database = FrelloConfig.PGDATABASE;
 
-        var url = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
+        var url = String.format("jdbc:postgresql://%s:%d/%s", host, port, database);
 
         ds.setUrl(url);
         ds.setUsername(user);

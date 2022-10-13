@@ -13,7 +13,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import com.frello.daos.user.CreateUserException;
 import com.frello.daos.user.SQLUserDAO;
 import com.frello.daos.user.UserDAO;
-import com.frello.lib.Env;
+import com.frello.lib.FrelloConfig;
 import com.frello.lib.Hash;
 import com.frello.models.user.ServiceConsumerActor;
 import com.frello.models.user.ServiceProviderActor;
@@ -118,7 +118,7 @@ public class AuthService {
     private static class AuthJWT {
         private static final String ISSUER = "frello";
 
-        private static final Algorithm algorithm = Algorithm.HMAC512(Env.get("JWT_SECRET"));
+        private static final Algorithm algorithm = Algorithm.HMAC512(FrelloConfig.JWT_SECRET);
         private static final JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(ISSUER)
                 .build();
