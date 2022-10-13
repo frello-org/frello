@@ -2,6 +2,7 @@ package com.frello.services;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,7 +80,8 @@ public class AuthService {
                 .passwordHash(Hash.hash(params.getPassword()))
                 .email(params.getEmail())
                 .firstName(params.getFirstName())
-                .lastName(params.getLastName());
+                .lastName(params.getLastName())
+                .creationTime(OffsetDateTime.now());
         if (params.isRegisterAsConsumer()) {
             user.consumer(new ServiceConsumerActor(id));
         }
