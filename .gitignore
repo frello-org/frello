@@ -5,6 +5,7 @@
 **/.postgresql
 **/.apt_generated
 __ignore__*
+**/node_modules
 
 .direnv
 .vscode
