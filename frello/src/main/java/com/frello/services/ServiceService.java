@@ -12,6 +12,13 @@ import java.util.UUID;
 public class ServiceService {
     private static final ServiceDAO serviceDAO = new SQLServiceDAO();
 
+    public static List<Service> services(User loggedUser) throws HttpException {
+        if (!loggedUser.isAdmin()) {
+            throw new HttpException(403, "Unauthorized: this is an admin-only resource");
+        }
+        return serviceDAO.services();
+    }
+
     public static Service service(UUID id) throws HttpException {
         return serviceDAO
                 .service(id)

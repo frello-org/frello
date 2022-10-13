@@ -31,6 +31,9 @@ public class App {
 
     private static void serviceRoutes() {
         path("/services", () -> {
+            get("/", (req, res) -> new HttpAdapter(req, res)
+                    .adaptWithGuard(ServiceService::services));
+
             get("/my-services", (req, res) -> new HttpAdapter(req, res)
                     .adaptWithGuard((user) -> {
                         var rawMode = req.queryParams("mode");

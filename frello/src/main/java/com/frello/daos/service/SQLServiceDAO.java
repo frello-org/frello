@@ -19,6 +19,21 @@ public class SQLServiceDAO implements ServiceDAO {
     private static final ServiceRequestDAO serviceRequestDAO = new SQLServiceRequestDAO();
 
     @Override
+    public List<Service> services() {
+        // FIXME: Add pagination.
+        try (var conn = DB.getConnection()) {
+            var stmt = conn.prepareStatement("""
+                    SELECT id, state, request_id, provider_id, consumer_id, creation_time
+                    FROM frello.services
+                    """);
+
+            return DB.collect(stmt.executeQuery(), this::map);
+        } catch (SQLException sqlEx) {
+            throw new InternalException(sqlEx);
+        }
+    }
+
+    @Override
     public Optional<Service> service(UUID id) {
         try (var conn = DB.getConnection()) {
             var set = unsafeQueryServicesByIdColumn(conn, "id", id);
@@ -69,10 +84,10 @@ public class SQLServiceDAO implements ServiceDAO {
         // SAFETY: If not careful this could lead to an SQL Injection attack.
         // DO NOT ADD QUERY PARAMETERS HERE.
         var query = String.format("""
-                SELECT id, state, request_id, provider_id, consumer_id, creation_time
-                FROM frello.services
-                WHERE %s = ?;
-                """,
+                        SELECT id, state, request_id, provider_id, consumer_id, creation_time
+                        FROM frello.services
+                        WHERE %s = ?;
+                        """,
                 column);
 
         var stmt = conn.prepareStatement(query);
