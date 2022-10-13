@@ -6,9 +6,11 @@ import com.frello.lib.DB;
 import com.frello.lib.InternalException;
 import com.frello.models.service.Service;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,14 +21,7 @@ public class SQLServiceDAO implements ServiceDAO {
     @Override
     public Optional<Service> service(UUID id) {
         try (var conn = DB.getConnection()) {
-            var stmt = conn.prepareStatement("""
-                    SELECT id, state, request_id, provider_id, consumer_id, creation_time
-                    FROM frello.services
-                    WHERE id = ?;
-                    """);
-            stmt.setObject(1, id);
-
-            var set = stmt.executeQuery();
+            var set = unsafeQueryServicesByIdColumn(conn, "id", id);
             if (!set.next()) {
                 return Optional.empty();
             }
@@ -34,6 +29,16 @@ public class SQLServiceDAO implements ServiceDAO {
         } catch (SQLException sqlEx) {
             throw new InternalException(sqlEx);
         }
+    }
+
+    @Override
+    public List<Service> userConsumedServices(UUID consumerId) {
+        return unsafeLoadManyByColumnName("consumer_id", consumerId);
+    }
+
+    @Override
+    public List<Service> userProvidedServices(UUID providerId) {
+        return unsafeLoadManyByColumnName("provider_id", providerId);
     }
 
     private Service map(ResultSet set) throws SQLException {
@@ -53,5 +58,34 @@ public class SQLServiceDAO implements ServiceDAO {
                 .creationTime(set.getObject("creation_time", OffsetDateTime.class))
                 .build();
 
+    }
+
+    private ResultSet unsafeQueryServicesByIdColumn(Connection conn, String column, UUID id)
+            throws SQLException {
+        if (column != "id" && column != "consumer_id" && column != "provider_id") {
+            throw new RuntimeException("Invalid column name");
+        }
+
+        // SAFETY: If not careful this could lead to an SQL Injection attack.
+        // DO NOT ADD QUERY PARAMETERS HERE.
+        var query = String.format("""
+                SELECT id, state, request_id, provider_id, consumer_id, creation_time
+                FROM frello.services
+                WHERE %s = ?;
+                """,
+                column);
+
+        var stmt = conn.prepareStatement(query);
+        stmt.setObject(1, id);
+        return stmt.executeQuery();
+    }
+
+    private List<Service> unsafeLoadManyByColumnName(String column, UUID id) {
+        try (var conn = DB.getConnection()) {
+            var sets = unsafeQueryServicesByIdColumn(conn, column, id);
+            return DB.collect(sets, this::map);
+        } catch (SQLException sqlEx) {
+            throw new InternalException(sqlEx);
+        }
     }
 }

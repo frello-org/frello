@@ -5,6 +5,7 @@ import static spark.Spark.*;
 import com.frello.services.*;
 import com.frello.services.common.External;
 import com.frello.services.common.HttpAdapter;
+import com.frello.services.common.HttpException;
 
 public class App {
     public static void main(String[] args) {
@@ -30,10 +31,15 @@ public class App {
 
     private static void serviceRoutes() {
         path("/services", () -> {
-            get("/my-services", (req, res) -> {
-                // var mode = req.queryParams("mode");
-                return null;
-            });
+            get("/my-services", (req, res) -> new HttpAdapter(req, res)
+                    .adaptWithGuard((user) -> {
+                        var rawMode = req.queryParams("mode");
+                        if (rawMode == null) {
+                            throw new HttpException(400, "Missing `mode` query parameter");
+                        }
+                        var mode = ServiceService.Mode.fromString(rawMode);
+                        return ServiceService.myServices(user, mode);
+                    }));
 
             get("/:id", (req, res) -> new HttpAdapter(req, res)
                     .adaptWithGuard((_user) -> {
