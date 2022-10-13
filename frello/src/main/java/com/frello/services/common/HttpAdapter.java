@@ -33,6 +33,10 @@ public class HttpAdapter {
         return adaptResponse(() -> responder.apply());
     }
 
+    public <O> String adaptWithGuard(Handler<User, O> guardedContext) throws HttpException, IOException {
+        return adapt(() -> guard((user) -> guardedContext.apply(user)));
+    }
+
     public <O> O guard(Handler<User, O> guardedContext) throws HttpException {
         var token = req.headers("Authorization");
         if (token == null || token.isBlank()) {

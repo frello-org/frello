@@ -34,7 +34,7 @@ public class App {
     private static void serviceRoutes() {
         path("/services", () -> {
             get("/my-services", (req, res) -> {
-                var mode = req.queryParams("mode");
+                // var mode = req.queryParams("mode");
                 return null;
             });
 
@@ -47,17 +47,17 @@ public class App {
     private static void serviceCategoryRoutes() {
         path("/service-categories", () -> {
             get("/", (req, res) -> new HttpAdapter(req, res)
-                    .adapt(ServiceCategoryService::categories));
+                    .adaptWithGuard((_user) -> ServiceCategoryService.categories()));
         });
     }
 
     private static void serviceRequestRoutes() {
         path("/service-requests", () -> {
             get("/", (req, res) -> new HttpAdapter(req, res)
-                    .adapt(ServiceRequestService::serviceRequests));
+                    .adaptWithGuard((_user) -> ServiceRequestService.serviceRequests()));
 
             get("/:id", (req, res) -> new HttpAdapter(req, res)
-                    .adapt(() -> {
+                    .adaptWithGuard((_user) -> {
                         var id = External.uuid(req.params(":id"));
                         return ServiceRequestService.serviceRequest(id);
                     }));
