@@ -1,7 +1,7 @@
 package com.frello.daos.service;
 
 import com.frello.lib.DB;
-import com.frello.lib.InternalException;
+import com.frello.lib.exceptions.InternalException;
 import com.frello.models.service.ServiceCategory;
 
 import java.sql.PreparedStatement;

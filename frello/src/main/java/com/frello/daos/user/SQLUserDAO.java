@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.postgresql.util.PSQLException;
 
 import com.frello.lib.DB;
-import com.frello.lib.InternalException;
+import com.frello.lib.exceptions.InternalException;
 import com.frello.models.user.AdminActor;
 import com.frello.models.user.ServiceConsumerActor;
 import com.frello.models.user.ServiceProviderActor;
@@ -34,18 +34,18 @@ public class SQLUserDAO implements UserDAO {
         // SAFETY: If not careful this could lead to an SQL Injection attack.
         // DO NOT ADD QUERY PARAMETERS HERE.
         var query = String.format("""
-                SELECT u.id, u.username, u.email, u.password_hash,
-                    u.first_name, u.last_name,
-                    u.is_deleted, u.deletion_time, u.creation_time,
-                    a.is_enabled AS is_admin,
-                    p.is_enabled AS is_provider,
-                    c.is_enabled AS is_consumer
-                FROM frello.users AS u
-                    LEFT JOIN frello.admin_actors AS a USING (id)
-                    LEFT JOIN frello.service_provider_actors AS p USING (id)
-                    LEFT JOIN frello.service_consumer_actors AS c USING (id)
-                WHERE u.%s = ? AND NOT u.is_deleted;
-                """,
+                        SELECT u.id, u.username, u.email, u.password_hash,
+                            u.first_name, u.last_name,
+                            u.is_deleted, u.deletion_time, u.creation_time,
+                            a.is_enabled AS is_admin,
+                            p.is_enabled AS is_provider,
+                            c.is_enabled AS is_consumer
+                        FROM frello.users AS u
+                            LEFT JOIN frello.admin_actors AS a USING (id)
+                            LEFT JOIN frello.service_provider_actors AS p USING (id)
+                            LEFT JOIN frello.service_consumer_actors AS c USING (id)
+                        WHERE u.%s = ? AND NOT u.is_deleted;
+                        """,
                 column);
 
         try (var conn = DB.getConnection()) {

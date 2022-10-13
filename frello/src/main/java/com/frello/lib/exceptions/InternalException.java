@@ -1,4 +1,4 @@
-package com.frello.lib;
+package com.frello.lib.exceptions;
 
 import java.util.Optional;
 

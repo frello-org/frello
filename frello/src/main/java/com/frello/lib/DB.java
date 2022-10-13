@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import com.frello.lib.exceptions.InternalException;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.postgresql.util.PSQLException;
 
 public class DB {
     private static final BasicDataSource ds = new BasicDataSource();
@@ -71,6 +74,12 @@ public class DB {
             list.add(mapper.apply(set));
         }
         return list;
+    }
+
+    public static Optional<String> tryGetConstraint(PSQLException pgEx) {
+        return Optional
+                .ofNullable(pgEx.getServerErrorMessage())
+                .flatMap((pg) -> Optional.ofNullable(pg.getConstraint()));
     }
 
     @FunctionalInterface

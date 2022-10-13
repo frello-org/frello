@@ -3,7 +3,7 @@ package com.frello.daos.service;
 import com.frello.daos.user.SQLUserDAO;
 import com.frello.daos.user.UserDAO;
 import com.frello.lib.DB;
-import com.frello.lib.InternalException;
+import com.frello.lib.exceptions.InternalException;
 import com.frello.models.service.ServiceRequest;
 
 import java.sql.ResultSet;

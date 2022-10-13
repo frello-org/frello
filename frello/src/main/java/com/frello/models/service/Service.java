@@ -1,7 +1,7 @@
 package com.frello.models.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.frello.lib.InternalException;
+import com.frello.lib.exceptions.InternalException;
 import com.frello.models.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
