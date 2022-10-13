@@ -71,7 +71,14 @@ public class App {
                     }));
 
             post("/", (req, res) -> {
-                return null;
+                var adapter = new HttpAdapter(req, res);
+                return adapter.adapt(ServiceRequestService.CreateServiceRequestParams.class, (body) -> {
+                    return adapter.guard((user) -> {
+                        var resp = ServiceRequestService.createService(body, user);
+                        res.status(201);
+                        return resp;
+                    });
+                });
             });
 
             post("/:id/apply-as-provider", (req, res) -> {

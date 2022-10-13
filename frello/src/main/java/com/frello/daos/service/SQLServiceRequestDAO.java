@@ -57,6 +57,31 @@ public class SQLServiceRequestDAO implements ServiceRequestDAO {
         }
     }
 
+    @Override
+    public void create(ServiceRequest sr) {
+        try (var conn = DB.getConnection()) {
+            var stmt = conn.prepareStatement("""
+                    INSERT INTO frello.service_requests (
+                        id, consumer_id, expected_price, title,
+                        raw_markdown_page_body, parsed_html_page_body,
+                        is_deleted, deletion_time, creation_time
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                    """);
+            stmt.setObject(1, sr.getId());
+            stmt.setObject(2, sr.getConsumerId());
+            stmt.setBigDecimal(3, sr.getExpectedPrice());
+            stmt.setString(4, sr.getTitle());
+            stmt.setString(5, sr.getRawMarkdownPageBody());
+            stmt.setString(6, sr.getParsedHTMLPageBody());
+            stmt.setBoolean(7, sr.isDeleted());
+            stmt.setObject(8, sr.getDeletionTime());
+            stmt.setObject(9, sr.getCreationTime());
+            DB.mustUpdate(stmt, 1);
+        } catch (SQLException sqlEx) {
+            throw new InternalException(sqlEx);
+        }
+    }
+
     private ServiceRequest map(ResultSet set) throws SQLException {
         var id = set.getObject("id", UUID.class);
         var consumerId = set.getObject("consumer_id", UUID.class);

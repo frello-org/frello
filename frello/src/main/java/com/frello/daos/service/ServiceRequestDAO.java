@@ -10,4 +10,6 @@ public interface ServiceRequestDAO {
     Optional<ServiceRequest> serviceRequest(UUID id);
 
     List<ServiceRequest> serviceRequests();
+
+    void create(ServiceRequest serviceRequest);
 }
