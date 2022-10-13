@@ -89,6 +89,6 @@ public class DB {
 
     @FunctionalInterface
     public interface TransactionContext<R, E extends Exception> {
-        R apply(Connection conn) throws E;
+        R apply(Connection conn) throws E, SQLException;
     }
 }

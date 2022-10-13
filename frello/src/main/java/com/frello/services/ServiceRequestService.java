@@ -2,6 +2,7 @@ package com.frello.services;
 
 import com.frello.daos.service.SQLServiceRequestDAO;
 import com.frello.daos.service.ServiceRequestDAO;
+import com.frello.lib.exceptions.NotFoundException;
 import com.frello.models.service.ServiceRequest;
 import com.frello.models.user.User;
 import com.frello.services.common.HttpException;
@@ -34,6 +35,7 @@ public class ServiceRequestService {
         if (!creator.isConsumer()) {
             throw new HttpException(403, "Only service consumer users may create service requests");
         }
+
         var serviceRequest = ServiceRequest.builder()
                 .id(UUID.randomUUID())
                 .consumerId(creator.getId())
@@ -44,7 +46,12 @@ public class ServiceRequestService {
                 .parsedHTMLPageBody(params.getRawMarkdownPageBody())
                 .creationTime(OffsetDateTime.now())
                 .build();
-        serviceRequestDAO.create(serviceRequest);
+
+        try {
+            serviceRequestDAO.createWithCategories(serviceRequest, params.getCategoryIDs());
+        } catch (NotFoundException e) {
+            throw new HttpException(e);
+        }
 
         return new CreateServiceRequestResponse(serviceRequest.getId());
     }
