@@ -25,7 +25,15 @@ public class HttpAdapter {
     }
 
     public <I, O> String adapt(Class<I> bodyType, Handler<I, O> handler) throws IOException {
-        var requestBody = objectMapper.readValue(req.body(), bodyType);
+        I requestBody;
+        try {
+            requestBody = objectMapper.readValue(req.body(), bodyType);
+        } catch (IOException e) {
+            System.err.println(e);
+            res.status(400);
+            var message = String.format("Could not deserialize body");
+            return makeJSON(new UserError(message));
+        }
         return adaptResponse(() -> handler.apply(requestBody));
     }
 
