@@ -1,6 +1,7 @@
 package com.frello.models.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.frello.lib.InternalException;
 import com.frello.models.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,17 @@ public class Service {
     public enum State {
         IN_PROGRESS,
         COMPLETED,
-        WITHDRAWN,
+        WITHDRAWN;
+
+        public static State fromString(String raw) {
+            return switch (raw.toUpperCase()) {
+                case "IN_PROGRESS" -> State.IN_PROGRESS;
+                case "COMPLETED" -> State.COMPLETED;
+                case "WITHDRAWN" -> State.WITHDRAWN;
+                default -> {
+                    throw new InternalException("Invalid Service.State: " + raw);
+                }
+            };
+        }
     }
 }

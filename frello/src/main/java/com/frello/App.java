@@ -2,10 +2,7 @@ package com.frello;
 
 import static spark.Spark.*;
 
-import com.frello.services.AuthService;
-import com.frello.services.ServiceCategoryService;
-import com.frello.services.ServiceRequestService;
-import com.frello.services.UserService;
+import com.frello.services.*;
 import com.frello.services.common.External;
 import com.frello.services.common.HttpAdapter;
 
@@ -38,9 +35,11 @@ public class App {
                 return null;
             });
 
-            get("/:id", (req, res) -> {
-                return null;
-            });
+            get("/:id", (req, res) -> new HttpAdapter(req, res)
+                    .adaptWithGuard((_user) -> {
+                        var id = External.uuid(req.params(":id"));
+                        return ServiceService.service(id);
+                    }));
         });
     }
 
