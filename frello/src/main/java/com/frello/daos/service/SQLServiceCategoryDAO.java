@@ -40,6 +40,24 @@ public class SQLServiceCategoryDAO implements ServiceCategoryDAO {
         }
     }
 
+    @Override
+    public void create(ServiceCategory category) {
+        try (var conn = DB.getConnection()) {
+            var stmt = conn.prepareStatement("""
+                    INSERT INTO frello.service_categories (
+                        id, name, description, hex_css_color
+                    ) VALUES (?, ?, ?, ?);
+                    """);
+            stmt.setObject(1, category.getId());
+            stmt.setString(2, category.getName());
+            stmt.setString(3, category.getDescription());
+            stmt.setString(4, category.getHexCSSColor());
+            DB.mustUpdate(stmt, 1);
+        } catch (SQLException sqlEx) {
+            throw new InternalException(sqlEx);
+        }
+    }
+
     private List<ServiceCategory> fetch(PreparedStatement stmt) throws SQLException {
         return DB.collect(stmt.executeQuery(), (set) -> ServiceCategory.builder()
                 .id(set.getObject("id", UUID.class))

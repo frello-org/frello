@@ -9,4 +9,6 @@ public interface ServiceCategoryDAO {
     List<ServiceCategory> categories();
 
     List<ServiceCategory> categoriesForRequest(UUID serviceRequestId);
+
+    void create(ServiceCategory category);
 }
