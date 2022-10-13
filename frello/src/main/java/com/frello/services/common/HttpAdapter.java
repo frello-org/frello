@@ -1,7 +1,9 @@
 package com.frello.services.common;
 
 import java.io.IOException;
+import java.util.HashMap;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import spark.Request;
 import spark.Response;
@@ -12,6 +14,8 @@ import com.frello.services.AuthService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 public class HttpAdapter {
     static ObjectMapper objectMapper = Mapper.getObjectMapper();
@@ -30,7 +34,7 @@ public class HttpAdapter {
             requestBody = objectMapper.readValue(req.body(), bodyType);
         } catch (IOException e) {
             res.status(400);
-            return makeJSON(new UserError("Could not deserialize body"));
+            return makeJSON(new UserError("Could not deserialize body", e.toString()));
         }
         return adaptResponse(() -> handler.apply(requestBody));
     }
@@ -89,9 +93,13 @@ public class HttpAdapter {
     }
 
     @Data
+    @RequiredArgsConstructor
     @AllArgsConstructor
     public static class UserError {
+        @NonNull
         private String message;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        private String description;
     }
 
     @FunctionalInterface
