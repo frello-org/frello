@@ -3,8 +3,10 @@ package com.frello.daos.service;
 import com.frello.daos.user.SQLUserDAO;
 import com.frello.daos.user.UserDAO;
 import com.frello.lib.DB;
+import com.frello.lib.exceptions.ConflictException;
 import com.frello.lib.exceptions.InternalException;
 import com.frello.models.service.Service;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -54,6 +56,42 @@ public class SQLServiceDAO implements ServiceDAO {
     @Override
     public List<Service> userProvidedServices(UUID providerId) {
         return unsafeLoadManyByColumnName("provider_id", providerId);
+    }
+
+    @Override
+    public void create(Service service) throws ConflictException {
+        try (var conn = DB.getConnection()) {
+            var stmt = conn.prepareStatement("""
+                    INSERT INTO frello.services (
+                        id, state, request_id, provider_id, consumer_id,
+                        creation_time
+                    ) VALUES (?, ?::frello.service_state, ?, ?, ?, ?);
+                    """);
+            stmt.setObject(1, service.getId());
+            stmt.setString(2, service.getState().toString());
+            stmt.setObject(3, service.getRequestId());
+            stmt.setObject(4, service.getProviderId());
+            stmt.setObject(5, service.getConsumerId());
+            stmt.setObject(6, service.getCreationTime());
+            DB.mustUpdate(stmt, 1);
+        } catch (PSQLException pgEx) {
+            var constraint = DB.tryGetConstraint(pgEx)
+                    .orElseThrow(() -> new InternalException(pgEx));
+
+            switch (constraint) {
+                case "services_state_request_id_provider_id_key" -> {
+                    throw new ConflictException(
+                            "Service",
+                            "provider_id",
+                            "the service provider user is already registered for this ServiceRequest");
+                }
+                default -> {
+                    throw new InternalException(pgEx);
+                }
+            }
+        } catch (SQLException sqlEx) {
+            throw new InternalException(sqlEx);
+        }
     }
 
     private Service map(ResultSet set) throws SQLException {

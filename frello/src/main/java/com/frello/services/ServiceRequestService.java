@@ -1,8 +1,12 @@
 package com.frello.services;
 
+import com.frello.daos.service.SQLServiceDAO;
 import com.frello.daos.service.SQLServiceRequestDAO;
+import com.frello.daos.service.ServiceDAO;
 import com.frello.daos.service.ServiceRequestDAO;
+import com.frello.lib.exceptions.ConflictException;
 import com.frello.lib.exceptions.NotFoundException;
+import com.frello.models.service.Service;
 import com.frello.models.service.ServiceRequest;
 import com.frello.models.user.User;
 import com.frello.services.common.HttpException;
@@ -19,6 +23,7 @@ import java.util.UUID;
 
 public class ServiceRequestService {
     private static final ServiceRequestDAO serviceRequestDAO = new SQLServiceRequestDAO();
+    private static final ServiceDAO serviceDAO = new SQLServiceDAO();
 
     public static ServiceRequest serviceRequest(UUID id) throws HttpException {
         return serviceRequestDAO
@@ -77,5 +82,42 @@ public class ServiceRequestService {
     public static class CreateServiceRequestResponse {
         @NonNull
         private UUID serviceRequestId;
+    }
+
+    public static ApplyAsProviderResponse applyAsProvider(UUID serviceRequestId, User provider)
+            throws HttpException {
+        if (!provider.isProvider()) {
+            throw new HttpException(403, "Only service consumer users may create service requests");
+        }
+
+        var serviceRequest = serviceRequestDAO
+                .serviceRequest(serviceRequestId)
+                .orElseThrow(() -> new HttpException(new NotFoundException("ServiceRequest", "id", serviceRequestId)));
+
+        var service = Service.builder()
+                .id(UUID.randomUUID())
+                .state(Service.State.IN_PROGRESS)
+                .requestId(serviceRequest.getId())
+                .providerId(provider.getId())
+                .consumerId(serviceRequest.getConsumerId())
+                .creationTime(OffsetDateTime.now())
+                .build();
+
+        try {
+            serviceDAO.create(service);
+        } catch (ConflictException conflictEx) {
+            throw new HttpException(conflictEx);
+        }
+
+        return new ApplyAsProviderResponse(service.getId());
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    @Jacksonized
+    public static class ApplyAsProviderResponse {
+        @NonNull
+        private UUID requestId;
     }
 }

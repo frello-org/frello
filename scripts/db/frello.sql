@@ -77,6 +77,8 @@ CREATE TABLE IF NOT EXISTS frello.services (
     provider_id uuid NOT NULL REFERENCES frello.service_provider_actors(id),
     consumer_id uuid NOT NULL REFERENCES frello.service_consumer_actors(id),
 
+    UNIQUE (state, request_id, provider_id),
+
     creation_time timestamptz DEFAULT now()
 );
 

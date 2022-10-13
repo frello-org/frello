@@ -20,4 +20,14 @@ public class ConflictException extends Exception {
         this.entityName = entityName;
         this.property = property;
     }
+
+    public ConflictException(String entityName, String property, String message) {
+        super(String.format(
+                "ConflictException: Could not create `%s` due to conflicting `%s` property (%s)",
+                entityName,
+                property,
+                message));
+        this.entityName = entityName;
+        this.property = property;
+    }
 }

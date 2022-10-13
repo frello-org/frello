@@ -14,7 +14,7 @@ public class App {
         notFound((req, res) -> {
             res.header("Content-Type", "application/json");
             res.status(404);
-            return HttpAdapter.makeJSON(new HttpAdapter.UserError("Not found"));
+            return HttpAdapter.makeJSON(new HttpAdapter.UserError("Not found (endpoint)"));
         });
 
         internalServerError((req, res) -> {
@@ -82,7 +82,12 @@ public class App {
             });
 
             post("/:id/apply-as-provider", (req, res) -> {
-                return null;
+                return new HttpAdapter(req, res).adaptWithGuard((user) -> {
+                    var id = External.uuid(req.params(":id"));
+                    var resp = ServiceRequestService.applyAsProvider(id, user);
+                    res.status(201);
+                    return resp;
+                });
             });
         });
     }
