@@ -12,6 +12,8 @@ const EmpregadorProjeto: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [project, setProject] = useState<any>();
 
+  const [interessadas, setInteressadas] = useState<any[]>([]);
+
   const getProjectInfo = async () => {
     const token = localStorage.getItem("@frelloToken");
     setLoading(true);
@@ -37,8 +39,27 @@ const EmpregadorProjeto: React.FC = () => {
     }
   };
 
+  const getApplieds = async () => {
+    const token = localStorage.getItem("@frelloToken");
+    if (token) {
+      await API.get(`/service-requests/${id}/applied-providers`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((data) => {
+          console.log(data.data.data);
+          setInteressadas(data.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   useEffect(() => {
     getProjectInfo();
+    getApplieds();
   }, []);
 
   return (
@@ -58,28 +79,19 @@ const EmpregadorProjeto: React.FC = () => {
           <PessoasContainer>
             <header>
               <h1>Pessoas Interessadas</h1>
-              <p>24 interesses</p>
+              <p>{interessadas.length} interesses</p>
             </header>
             {/** Listagem pessoas interessadas */}
             <PessoasList>
-              <Interessado
-                name="Eduardo Lemos"
-                phone="(31) 9 9959-3050"
-                mail="eduardo@email.com"
-                tags={["HTML", "Css", "JS"]}
-              />
-              <Interessado
-                name="Daniel Capanema"
-                phone="(31) 9 9959-3999"
-                mail="daniel@email.com"
-                tags={["C", "Java"]}
-              />
-              <Interessado
-                name="Ana Carolina"
-                phone="(11) 9 2159-3999"
-                mail="ana@hotmail.com"
-                tags={["UX", "UI", "React", "Node"]}
-              />
+              {interessadas.map((item: any) => (
+                <Interessado
+                  key={item.id}
+                  name={item.username}
+                  phone="(31) 9 9959-3050"
+                  mail={item.email}
+                  tags={[]}
+                />
+              ))}
             </PessoasList>
           </PessoasContainer>
         </Container>

@@ -50,6 +50,7 @@ const PropostasPrestador: React.FC = () => {
     }
   };
 
+  
   useEffect(() => {
     handleGetData();
   }, []);
