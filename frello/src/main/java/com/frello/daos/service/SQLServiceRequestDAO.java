@@ -6,6 +6,7 @@ import com.frello.lib.DB;
 import com.frello.lib.exceptions.InternalException;
 import com.frello.lib.exceptions.NotFoundException;
 import com.frello.models.service.ServiceRequest;
+import com.frello.models.user.User;
 import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
@@ -78,6 +79,23 @@ public class SQLServiceRequestDAO implements ServiceRequestDAO {
                     associateCategoryToRequest(conn, serviceRequest.getId(), categoryId);
                 }
                 return null;
+            });
+        } catch (SQLException sqlEx) {
+            throw new InternalException(sqlEx);
+        }
+    }
+
+    @Override
+    public List<User> appliedFreelancers(UUID serviceRequestId) {
+        try (var conn = DB.getConnection()) {
+            var stmt = conn.prepareStatement("""
+                    SELECT s.provider_id FROM frello.services as s
+                    WHERE s.request_id = ? AND s.state != 'WITHDRAWN';
+                    """);
+            stmt.setObject(1, serviceRequestId);
+            return DB.collect(stmt.executeQuery(), (set) -> {
+                var id = set.getObject("provider_id", UUID.class);
+                return userDAO.user(id).get(); // Almost safe. :)
             });
         } catch (SQLException sqlEx) {
             throw new InternalException(sqlEx);

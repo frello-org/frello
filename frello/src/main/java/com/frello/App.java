@@ -14,6 +14,7 @@ public class App {
         notFound((req, res) -> {
             res.header("Content-Type", "application/json");
             res.status(404);
+            res.header("X-Unstable-Not-Found-Kind", "Endpoint");
             return HttpAdapter.makeJSON(new HttpAdapter.UserError("Not found"));
         });
 
@@ -90,6 +91,12 @@ public class App {
                     .adaptWithGuard((_user) -> {
                         var id = External.uuid(req.params(":id"));
                         return ServiceRequestService.serviceRequest(id);
+                    }));
+
+            get("/:id/applied-providers", (req, res) -> new HttpAdapter(req, res)
+                    .adaptWithGuard((_user) -> {
+                        var id = External.uuid(req.params(":id"));
+                        return ServiceRequestService.appliedFreelancers(id);
                     }));
 
             post("/", (req, res) -> {

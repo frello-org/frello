@@ -2,6 +2,7 @@ package com.frello.daos.service;
 
 import com.frello.lib.exceptions.NotFoundException;
 import com.frello.models.service.ServiceRequest;
+import com.frello.models.user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +16,6 @@ public interface ServiceRequestDAO {
     void createIgnoringCategories(ServiceRequest serviceRequest);
 
     void createWithCategories(ServiceRequest serviceRequest, List<UUID> categoryIDs) throws NotFoundException;
+
+    List<User> appliedFreelancers(UUID serviceRequestId);
 }

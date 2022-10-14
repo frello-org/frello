@@ -120,4 +120,8 @@ public class ServiceRequestService {
         @NonNull
         private UUID requestId;
     }
+
+    public static List<User> appliedFreelancers(UUID serviceRequestId) {
+        return serviceRequestDAO.appliedFreelancers(serviceRequestId);
+    }
 }
