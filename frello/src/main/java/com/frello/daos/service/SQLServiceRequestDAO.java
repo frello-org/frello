@@ -21,6 +21,9 @@ public class SQLServiceRequestDAO implements ServiceRequestDAO {
     private static final UserDAO userDAO = new SQLUserDAO();
     private static final ServiceCategoryDAO categoryDAO = new SQLServiceCategoryDAO();
 
+    /**
+     * Método para recuperar um {@link ServiceRequest} do banco de dados.
+     */
     @Override
     public Optional<ServiceRequest> serviceRequest(UUID id) {
         try (var conn = DB.getConnection()) {
@@ -44,6 +47,10 @@ public class SQLServiceRequestDAO implements ServiceRequestDAO {
         }
     }
 
+    /**
+     * Método para recuperar todos {@link ServiceRequest} os cadastrados no banco de
+     * dados.
+     */
     @Override
     public List<ServiceRequest> serviceRequests() {
         try (var conn = DB.getConnection()) {
@@ -61,6 +68,9 @@ public class SQLServiceRequestDAO implements ServiceRequestDAO {
         }
     }
 
+    /**
+     * Método para salvar um {@link ServiceRequest} no banco de dados.
+     */
     @Override
     public void createIgnoringCategories(ServiceRequest serviceRequest) {
         try (var conn = DB.getConnection()) {
@@ -70,6 +80,10 @@ public class SQLServiceRequestDAO implements ServiceRequestDAO {
         }
     }
 
+    /**
+     * Método para salvar um {@link ServiceRequest} no banco de dados, inclusive
+     * associando os IDs de categorias passados utilizando uma relação N:N.
+     */
     @Override
     public void createWithCategories(ServiceRequest serviceRequest, List<UUID> categoryIDs) throws NotFoundException {
         try {
@@ -85,6 +99,10 @@ public class SQLServiceRequestDAO implements ServiceRequestDAO {
         }
     }
 
+    /**
+     * Método para retornar todos os freelancers que se cadastraram numa determinada
+     * requisição de serviço.
+     */
     @Override
     public List<User> appliedFreelancers(UUID serviceRequestId) {
         try (var conn = DB.getConnection()) {

@@ -8,6 +8,9 @@ import com.frello.services.common.HttpAdapter;
 import com.frello.services.common.HttpException;
 
 public class App {
+    /**
+     * Inicia o servidor HTTP e realiza os devidos mapeamento de rotas.
+     */
     public static void main(String[] args) {
         port(3333);
 
@@ -52,6 +55,9 @@ public class App {
 
     }
 
+    /**
+     * Define as rotas relacionadas aos serviços.
+     */
     private static void serviceRoutes() {
         path("/services", () -> {
             get("/", (req, res) -> new HttpAdapter(req, res)
@@ -75,6 +81,9 @@ public class App {
         });
     }
 
+    /**
+     * Define as rotas relacionadas às categorias de serviços.
+     */
     private static void serviceCategoryRoutes() {
         path("/service-categories", () -> {
             get("/", (req, res) -> new HttpAdapter(req, res)
@@ -82,6 +91,9 @@ public class App {
         });
     }
 
+    /**
+     * Define as rotas relacionadas às requisições de serviços.
+     */
     private static void serviceRequestRoutes() {
         path("/service-requests", () -> {
             get("/", (req, res) -> new HttpAdapter(req, res)
@@ -121,6 +133,9 @@ public class App {
         });
     }
 
+    /**
+     * Define as rotas do sistema de autenticação.
+     */
     private static void authRoutes() {
         path("/auth", () -> {
             post("/login", (req, res) -> {
