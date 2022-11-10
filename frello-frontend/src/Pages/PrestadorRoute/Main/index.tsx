@@ -145,6 +145,7 @@ const MainPrestador: React.FC = () => {
           <>
             {filter(list, tagList).map((item, index) => (
               <div
+                style={{ width: "100%" }}
                 onClick={() => {
                   setCurrent(list[index]);
                   console.log(list[index]);
