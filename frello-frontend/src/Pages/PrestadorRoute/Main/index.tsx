@@ -23,6 +23,26 @@ import {
   TagList,
 } from "./styles";
 
+interface Cat {
+  categories: string[];
+}
+
+// this is not efficient and i am not proud of it
+function filter(list: Cat[], tagList: string[]): any[] {
+  return list.filter((item) => {
+    if (tagList.length == 0) {
+      return true;
+    }
+
+    for (const cat of item.categories) {
+      if (tagList.includes(cat)) {
+        return true;
+      }
+    }
+    return false;
+  });
+}
+
 const MainPrestador: React.FC = () => {
   // states
   const [option, setOption] = useState(0);
@@ -123,7 +143,7 @@ const MainPrestador: React.FC = () => {
           </LeftOptions>
           {/** List */}
           <>
-            {list.map((item, index) => (
+            {filter(list, tagList).map((item, index) => (
               <div
                 onClick={() => {
                   setCurrent(list[index]);
